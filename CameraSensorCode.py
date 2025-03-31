@@ -1,5 +1,9 @@
-from pymavlink import mavutil
+import RPi.GPIO as GPIO
 import time
+from pymavlink import mavutil
+import cv2
+import numpy as np
+import math
 
 cap = cv2.VideoCapture(0)
 StepSize = 5
@@ -8,15 +12,11 @@ StepSize = 5
 GPIO_TRIGGER = 23
 GPIO_ECHO = 24
 
-print("Initial setup is complete")
-
 # Start a connection
 the_connection = mavutil.mavlink_connection(’/dev/ttyACM0’)
-
 print("Mavlink connected")
 
 # Wait for the first heartbeat
-# This sets the system and component ID of remote system for the link
 the_connection.wait_heartbeat()
 print("Heartbeat from system (system %u component %u)" % (the_connection.target_system,
 the_connection.target_component))
@@ -105,20 +105,30 @@ def process_camera_frame():
 		else:
 			return 2
 
+value = 0
 ultrasonic_setup()
 
 while(1):
 	
+	ret = process_camera_frame()
 	dist = distance()
 	print ("Measured Distance = %.1f cm" % dist)
+	print ("Direction flag is %d" % ret)
+
+	if(dist > 50):
+		value = 1
+	elif(15 < dist < 50):
+		value = 2
+	elif(dist < 15):
+		value = 3
 	
-	ret = process_camera_frame()
-	if ret == 0:
+	if (ret == 0):
 		print(’Left direction is preferred’);
-	elif ret == 1:
+	elif (ret == 1):
 		print(’Forward direction is preferred’);
-	elif ret == 2:
+	elif (ret == 2):
 		print(’Right direction is preferred’);
 		
 	message = mavutil.mavlink.MAVLink_debug_message(0, value, 0.0)
+	print(message)
 	the_connection.mav.send(message)
