@@ -93,18 +93,6 @@ For a comprehensive understanding of the project, refer to the [4DS4 Project 2 R
 
 ---
 
-## 🤝 Contributing
-
-Contributions are welcome! Please fork the repository and submit a pull request for any enhancements or bug fixes.
-
----
-
 ## 📫 Contact
 
 For any inquiries or feedback, please contact [Aaron Rajan](mailto:aaron.rajan@example.com).
-
----
-
-## 📝 License
-
-This project is licensed under the MIT License. See the [LICENSE](./LICENSE) file for details.
